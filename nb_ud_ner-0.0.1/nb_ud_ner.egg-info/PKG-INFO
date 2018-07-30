@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: nb-ud-ner
+Version: 0.0.1
+Summary: Trained on a not yet publicly available dataset developed by LFG-group at UiO, Schibsted and Nasjonalbiblioteket. The dataset follows Universal Dependencies annotation standard and includes NER tags in the last column of the .conllu files.
+Home-page: UNKNOWN
+Author: Kaisa Korsak
+Author-email: kasiakorsak23@gmail.com
+License: Creative Commons Attribution-ShareAlike 4.0 International license
+Description: UNKNOWN
+Platform: UNKNOWN

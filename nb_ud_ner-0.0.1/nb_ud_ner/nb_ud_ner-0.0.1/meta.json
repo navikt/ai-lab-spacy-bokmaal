@@ -1,0 +1,35 @@
+{
+  "lang":"nb",
+  "name":"ud_ner",
+  "version":"0.0.1",
+  "description":"Trained on a not yet publicly available dataset developed by LFG-group at UiO, Schibsted and Nasjonalbiblioteket. The dataset follows Universal Dependencies annotation standard and includes NER tags in the last column of the .conllu files.",
+  "author":"Kaisa Korsak",
+  "email":"kasiakorsak23@gmail.com",
+  "url":"",
+  "license":"Creative Commons Attribution-ShareAlike 4.0 International license",
+  "pipeline":[
+    "tagger",
+    "parser",
+    "ner"
+  ],
+  "accuracy":{
+    "uas":88.04383459,
+    "las":85.2838789241,
+    "ents_p":77.9855247286,
+    "ents_r":77.3788150808,
+    "ents_f":77.6809852809,
+    "tags_acc":95.2779225053,
+    "token_acc":100.0
+  },
+  "speed":{
+    "nwords":36467,
+    "cpu":6072.8240712301,
+    "gpu":null
+  },
+  "vectors":{
+    "width":0,
+    "vectors":0,
+    "keys":0
+  },
+  "spacy_version":">=2.0.11"
+}
