@@ -25,14 +25,17 @@ class EntityMatcher(object):
     name = 'entity_matcher'  # component name shown in pipeline
 
     def __init__(self, nlp):
+        patterns = defaultdict(list)
         Span.set_extension('via_patterns', default=False)
-        label = 'ORG'
-        self.entities = self.get_entities(label)
-        self.label = nlp.vocab.strings[label]  # get entity label ID
-        self.matcher = PhraseMatcher(nlp.vocab)
-        print(self.entities)
-        patterns = [nlp(text) for text in self.entities]
-        self.matcher.add(label, None,  *patterns)
+        labels = ['ORG', 'LOC', 'PER', 'MISC']
+        #get entities with given label and add to matcher for each label in list
+        for label in labels:
+            self.entities = self.get_entities(label)
+            self.label = nlp.vocab.strings[label]  # get entity label ID
+            self.matcher = PhraseMatcher(nlp.vocab)
+            patterns[label] = [nlp(text) for text in self.entities]
+        for label, pattern in patterns.items():
+            self.matcher.add(label, None,  *pattern)
 		
     def __call__(self, doc):
         matches = self.matcher(doc)
