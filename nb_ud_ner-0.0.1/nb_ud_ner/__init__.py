@@ -25,24 +25,24 @@ class EntityMatcher(object):
     name = 'entity_matcher'  # component name shown in pipeline
 
     def __init__(self, nlp):
+        #self.name = name # component name shown in pipeline
         patterns = defaultdict(list)
         Span.set_extension('via_patterns', default=False)
         labels = ['ORG', 'LOC', 'PER', 'MISC']
+        self.matcher = PhraseMatcher(nlp.vocab)
         #get entities with given label and add to matcher for each label in list
         for label in labels:
             self.entities = self.get_entities(label)
-            self.label = nlp.vocab.strings[label]  # get entity label ID
-            self.matcher = PhraseMatcher(nlp.vocab)
             patterns[label] = [nlp(text) for text in self.entities]
         for label, pattern in patterns.items():
             self.matcher.add(label, None,  *pattern)
-		
+        
     def __call__(self, doc):
         matches = self.matcher(doc)
         spans = []  # keep the spans for later so we can merge them afterwards
-        for _, start, end in matches:
-            # create Span for matched country and assign label
-            entity = Span(doc, start, end, label=self.label)
+        for label_id, start, end in matches:
+            # create Span for matched entity and assign label
+            entity = Span(doc, start, end, label=label_id)
             entity._.via_patterns = True
             spans.append(entity)
         doc.ents = list(doc.ents) + spans  # overwrite doc.ents and add entities – don't replace!
@@ -51,24 +51,23 @@ class EntityMatcher(object):
         return doc  # don't forget to return the Doc!
 
     def get_entities(self, label):
-    	entity_list = []
-    	#get entities tagged with that label from a file label.csv and return a list of those entities
-    	filename = label.lower() + ".csv"
-    	path = 'entity_matcher/'
-    	filename = os.path.join(path, filename)
-    	first_line_skipped = False
-    	with open(filename, 'r', encoding='utf-8') as file:
-    		for line in file:
-    			#skip the first line containg heading etc
-    			if not first_line_skipped:
-    				first_line_skipped = True
-    				continue
-    			line = line.split(";")
-    			entity = re.sub(r'[^\w\s]','',line[1])
-    			#remove extra whitespace after removing punctuation, otherwise it will end up as a token
-    			entity = re.sub(' +',' ',entity)
-    			words = entity.split()
-    			#PhraseMatcher only supports phrases up to 10 tokens
-    			if len(words) <= 10:
-    				entity_list.append(entity.title())
-    	return entity_list
+        entity_list = []
+        #get entities tagged with that label from a file label.csv and return a list of those entities
+        filename = label.lower() + ".csv"
+        path = 'entity_matcher/'
+        filename = os.path.join(path, filename)
+        first_line_skipped = False
+        with open(filename, 'r', encoding='utf-8') as file:
+            for line in file:
+                #skip the first line containg heading etc
+                if not first_line_skipped:
+                    first_line_skipped = True
+                    continue
+                line = line.split(";")
+                entity = re.sub(r'[^\w\s]','',line[1])
+                #remove extra whitespace after removing punctuation, otherwise it will end up as a token
+                entity = re.sub(' +',' ',entity)
+                words = entity.split()
+                if len(words) < 10:
+                    entity_list.append(entity.title())
+        return entity_list
