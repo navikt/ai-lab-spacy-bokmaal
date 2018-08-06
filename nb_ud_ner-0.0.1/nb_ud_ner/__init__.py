@@ -45,15 +45,21 @@ class EntityMatcher(object):
             entity = Span(doc, start, end, label=label_id)
             entity._.via_patterns = True
             spans.append(entity)
+            token_lemma = ""
+            for token in doc[start:end]:
+                if token_lemma == "":
+                    token_lemma = token.lemma_
+                else:
+                    token_lemma = token_lemma + " " + token.lemma_
+
+            #lemma will be overwritten when setting token's tag, so I have to overwrite it with the correct form again
+            for token in doc[start:end]:
+                token.tag_ = 'PROPN___'
+                token.lemma_ = token_lemma.lower()
             
-            for token in doc:
-                #can't force pos_, because pos_ is decided from tag_
-                #force tag_ to be PROPN, all named entities are PROPN
-                #otherwise 'Hvaler' will be NOUN
-                if token.text == entity.text:
-                    token.tag_ = 'PROPN___'
         doc.ents = list(doc.ents) + spans  # overwrite doc.ents and add entities – don't replace!
         for span in spans:
+            #print(span)
             span.merge()  # merge all spans at the end to avoid mismatched indices
         return doc  # don't forget to return the Doc!
 
