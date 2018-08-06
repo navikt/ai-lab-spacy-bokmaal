@@ -12,11 +12,14 @@ nlp = spacy.load('nb_ud_ner')
 #create a Doc object with an example sentence
 doc = nlp(u'London er en stor by i Storbritannia.')
 
-#for each token in the sentence print it's form, lemma, pos, tag, dependency relation and entity label
+#for each token in the sentence print its form, lemma, pos, tag, dependency relation and entity label
 print("Sentence analysis:")
 for token in doc:
     print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_,
           token.ent_iob_, token.ent_type_)
+print("")
+print("Was 'London' found via EntityMatcher?")
+print(doc[0:1]._.via_patterns)
 
 #create lemmatizer
 lemmatizer = Lemmatizer(index=LEMMA_INDEX_NB, rules=LEMMA_RULES_NB, exceptions=LEMMA_EXC_NB, lookup=LOOKUP_NB)
