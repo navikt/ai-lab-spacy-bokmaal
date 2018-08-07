@@ -78,4 +78,5 @@ In order for it to work I had to add **entity_matcher** to the model's meta.json
 
 **EntityMatcher** extracts data from various text files and labels them with an entity tag (PER, LOC, ORG or MISC). It enforces 'PROPN___' tag on all the entity tokens too (since all named entities are proper nouns). One can also check if the entity label comes from custom **EntityMatcher** or built-in **EntityRecognizer** by using the **'via_patterns'** extension, which returns True in the first case and False in the other.
 
+## Examples
 Examples of use can be found in **spacy_examples.py**
