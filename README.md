@@ -70,9 +70,12 @@ which gives me the folllowing result:
     NER R              70.34          
     NER F              70.59   
 
+## Custom EntityMatcher
 I also added a custom pipeline component, **EntityMatcher**. Its code is based on this solution:
 https://support.prodi.gy/t/adding-custom-attribute-to-doc-having-ner-use-attribute/356/6
 
-It extracts data from various text files and labels it with an entity tag (PER, LOC, ORG or MISC). It enforces 'PROPN___' tag on all the entity tokens too (since all named entities are proper nouns). One can also check if the entity label comes from custom **EntityMatcher** or built-in **EntityRecognizer** by using the **'via_patterns'** extension, which returns True in the first case and False in the other.
+In order for it to work I had to add **entity_matcher** to the model's meta.json pipeline and to the language's factory (in **__init__.py**). The files that the component extracts data from are placed in a separate folder **entity_matcher** and their names contain one of the 4 labels used: PER, LOC, ORG or MISC.
+
+**EntityMatcher** extracts data from various text files and labels them with an entity tag (PER, LOC, ORG or MISC). It enforces 'PROPN___' tag on all the entity tokens too (since all named entities are proper nouns). One can also check if the entity label comes from custom **EntityMatcher** or built-in **EntityRecognizer** by using the **'via_patterns'** extension, which returns True in the first case and False in the other.
 
 Examples of use can be found in **spacy_examples.py**
