@@ -63,7 +63,10 @@ class EntityMatcher(object):
                     token_lemma = token.lemma_
                 else:
                     token_lemma = token_lemma + " " + token.lemma_
-
+                    
+            #can't force pos_, because pos_ is decided from tag_ 
+            #force tag_ to be PROPN, all named entities are PROPN, otherwise 'Hvaler' will be NOUN 
+            #lemma will be overwritten when setting token's tag, so I have to overwrite it with the correct form again
             for token in doc[start:end]:
                 token.tag_ = 'PROPN___'
                 token.lemma_ = token_lemma.lower()

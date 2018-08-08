@@ -1,0 +1,2 @@
+## About
+The script in **one_file_to_rule_them_all.py** extracts the data from various .csv files as pandas DataFrames, saves it in a dictionary with 'name' and 'label' as keys and then creates a new DataFrame for all the data, which is exported to a new .csv file. The original files are structured quite differently from each other, so it's easier to first clean up all the data so that it can be used more efficiently. I assumed that the files are in a separate folder **csv_files** and that's also where the new .csv file is created.
