@@ -22,6 +22,7 @@ __version__ = get_model_meta(Path(__file__).parent)['version']
 
 
 def load(**overrides):
+    #add entity_matcher to Language's factory
     Language.factories['entity_matcher'] = lambda nlp, **cfg: EntityMatcher(nlp, **cfg)
     return load_model_from_init_py(__file__, **overrides)
 
@@ -30,14 +31,16 @@ class EntityMatcher(object):
 
     def __init__(self, nlp: Language):
         patterns = defaultdict(list)
+        #set a custom extension
         Span.set_extension('via_patterns', default=False)
         self.matcher = PhraseMatcher(nlp.vocab)
-        #get entities with given label and add to matcher for each label in list
+        #get all entities and their labels from DataFrame and add to matcher
         self.entities = self.get_entities()
         entity_dict = self.entities.to_dict('index')
         for row, dictionary in entity_dict.items():
             label = dictionary['label']
             name = dictionary['name']
+            #make Doc object for each name
             name = nlp(name)
             self.matcher.add(label, None, name)
     
@@ -48,10 +51,8 @@ class EntityMatcher(object):
             # create Span for matched entity and assign label
             entity = Span(doc, start, end, label=label_id)
             entity._.via_patterns = True
-            print("entity: ")
-            #that's a string
+            print("found entity: ")
             print(entity.text)
-            #print("start: " + str(start) + ", end: " + str(end))
             spans.append(entity)
             print("tokens in that entity: ")
             token_lemma = ""
@@ -66,7 +67,6 @@ class EntityMatcher(object):
             #force tag_ to be PROPN, all named entities are PROPN, otherwise 'Hvaler' will be NOUN 
             #lemma will be overwritten when setting token's tag, so I have to overwrite it with the correct form again
             for token in doc[start:end]:
-                #token.ent_type_ = "PErgs"
                 token.tag_ = 'PROPN___'
                 token.lemma_ = token_lemma.lower()
             print("")
@@ -79,23 +79,14 @@ class EntityMatcher(object):
         entity_dict = {}
         #get directory of this script
         script_dir = os.path.dirname(__file__)
-        #print(script_dir)
-        #find all .csv files in this directory's entity_matcher folder
-        #should be only one file now
+        #find the .csv file with all entities in this directory's entity_matcher folder
         path = glob.glob(script_dir + '/entity_matcher/*csv')
-        #print(label)
         for filename in path:
-            print(filename)
-            filename2 = re.match('.*?entity_matcher/(\w+).csv', filename)
-            if filename2 != None:
-                df = self.load_dataframe(filename, encoding='utf-8')
-                #print("dataframe")
-                return df
+            df = self.load_dataframe(filename, encoding='utf-8')
+            return df
 
     def load_dataframe(self, uri_to_file: str, encoding: str):
-        #print(uri_to_file)
         path = Path(uri_to_file)
-        #print(path)
         try:
             return pd.read_csv(path.absolute(), sep=";", encoding=encoding, quoting=csv.QUOTE_NONE, index_col=0)
         except pd.errors.EmptyDataError as err:
