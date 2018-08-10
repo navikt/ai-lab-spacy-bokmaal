@@ -74,9 +74,16 @@ which gives me the folllowing result:
 I also added a custom pipeline component, **EntityMatcher**. Its code is based on this solution:
 https://support.prodi.gy/t/adding-custom-attribute-to-doc-having-ner-use-attribute/356/6
 
-In order for it to work I had to add **entity_matcher** to the model's meta.json pipeline and to the language's factory (in **__init__.py**). The files that the component extracts data from are placed in a separate folder **entity_matcher** and their names contain one of the 4 labels used: PER, LOC, ORG or MISC.
+In order for it to work I had to add **entity_matcher** to the model's meta.json pipeline and to the language's factory (in **\_\_init__.py**). The files that the component extracts data from are placed in a separate folder **entity_matcher** and their names contain one of the 4 labels used: PER, LOC, ORG or MISC.
 
 **EntityMatcher** extracts data from various text files and labels them with an entity tag (PER, LOC, ORG or MISC). It enforces 'PROPN___' tag on all the entity tokens too (since all named entities are proper nouns). One can also check if the entity label comes from custom **EntityMatcher** or built-in **EntityRecognizer** by using the **'via_patterns'** extension, which returns True in the first case and False in the other.
+
+## Extending the model with custom entity labels
+To add entities with a custom label check the guide here (using **Matcher/PhraseMatcher** that doesn't require context/sentences):
+https://spacy.io/usage/linguistic-features#adding-phrase-patterns
+
+, especially the section **Adding on_match rules** and examples. Or here if your goal is to train **EntityRecognizer** with custom labels (requires whole sentences tagged with named entity label):
+https://spacy.io/usage/examples#section-training
 
 ## Examples
 Examples of use can be found in **spacy_examples.py**
